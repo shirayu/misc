@@ -1,5 +1,9 @@
 <?php
 
+/*
+ *  Display SHA512 encoded string for inputs.
+ *
+ */
 
 if( isset($_POST["lines"])){
 	$list = explode("\r\n", $_POST["lines"] );
