@@ -9,10 +9,11 @@ import sys
 from xml.sax.saxutils import * #for escape
 
 
-FOLDER = ["a", "b"]
+FOLDER = ["/home/example/fml/spool/ml/member-ml/"]
 
 MEMBERS="members"
 ACTIVES="actives"
+BK="./bk"
 
 
 def getEditHTML(id):
@@ -58,6 +59,11 @@ def update(query):
         return "元ファイルが変更されています org_hash => hashtxt " % (org_hash, hashtxt)
 
     try:
+        bk = "%s/%s/%s" % (BK, id, hashtxt)
+        f = open(bk, 'w')    
+        f.write(body)
+        f.close()
+
         f = open(folder_name + ACTIVES, 'w')    
         f.write(content)
         f.close()
@@ -65,6 +71,8 @@ def update(query):
         f = open(folder_name + MEMBERS, 'w')    
         f.write(content)
         f.close()
+
+
     except:
         return "エラー発生"
 
@@ -90,10 +98,11 @@ def choose():
     msg = ""
     for i,k in enumerate(FOLDER):
         msg += """
-        <a href="%s?id=%d">%s</a>
+        <a href="%s?id=%d">%s</a> <br />
+         - <a href="%s/%d">backup</a> <br />
         <br />
         <br />
-        """ % (__file__, i, k)
+        """ % (__file__, i, k, BK, i)
 
     ret = """<?xml version="1.0" encoding="UTF-8"?>
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -106,6 +115,10 @@ def choose():
     <h1>編集するMLを選択してください</h1>
 
     %s
+
+
+        <br />
+    <a href=".">戻る</a>
 </body>
 </html>
 """ % (msg)
@@ -138,3 +151,4 @@ if __name__=='__main__':
 
     sys.stdout.write("""Content-type: text/html; charset=utf-8\n\n""")
     print ret
+
