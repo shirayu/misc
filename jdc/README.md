@@ -4,7 +4,8 @@
 - a lot of memory
 
 ##Commands
-- g++ convert2gnram_style.cpp -std=c++0x -o convert2gnram_style
-- ./convert2gnram_style out ./nwc2010.verb
+- g++ convert2google_ngram_style.cpp -std=c++0x -O2 -o convert2google_ngram_style
+- ./convert2google_ngram_style ./nwc2010.verb
+- ln -s ./out/1gms/1gm-0000 ./out/1gms/vocab
 - ssgnc-build.sh out index
 

@@ -29,8 +29,8 @@ class MyHashEq : std::binary_function<std::pair<size_t , size_t> , std::pair<siz
 		bool operator() (const std::pair<size_t , size_t> & x , const std::pair<size_t , size_t> & y) const{
 			const char * s = buf + x.first;
 			const char * t = buf + y.first;
-			const char * se = buf + x.second; // *se == '\n'
-			for( ; *s == *t && s != se ; ++s , ++t);
+			const char * send = buf + x.second -1;
+			for( ; *s == *t && s != send ; ++s , ++t);
 			// *s != *t or (*s == '\n' => *t == '\n')
 			return *s == *t;
 		}
@@ -70,7 +70,7 @@ typedef std::pair<std::pair<size_t,size_t> , size_t>	MYPAIR;
 typedef std::unordered_map< std::pair<size_t , size_t> , size_t  , MyHash , MyHashEq> MYMAP;
 
 
-void add(MYMAP &m, std::pair<size_t , size_t> &p, const unsigned int freq){
+void add(MYMAP &m, std::pair<size_t , size_t> &p, const unsigned long int freq){
 	MYMAP::iterator it = m.find(p); 
 	if(it != m.end()){
 		it->second += freq;
@@ -79,7 +79,7 @@ void add(MYMAP &m, std::pair<size_t , size_t> &p, const unsigned int freq){
 	}
 };
 
-void printout(const int ngram, MYMAP &m, const std::string &out_folder, char* buf, const unsigned int SKIP){
+void printout(const int ngram, MYMAP &m, const std::string &out_folder, const char* buf, const unsigned int SKIP){
 	std::stringstream ss;
 	ss << out_folder << "/" << ngram << "gms/";
 	yucha::tool::recursive_mkdir(ss.str().c_str());
@@ -88,18 +88,32 @@ void printout(const int ngram, MYMAP &m, const std::string &out_folder, char* bu
 	{
 		size_t count = 0;
 		size_t filenum = 0;
-		std::ofstream ret(getOutName(ss.str(), ngram, filenum).c_str());
+//                std::ofstream *ret = new std::ofstream(getOutName(ss.str(), ngram, filenum).c_str());
+		FILE *ret = fopen(getOutName(ss.str(), ngram, filenum).c_str(), "w" );
 
 		for(MYMAP::const_iterator it = m.begin(); it != m.end(); ++it){
 			++count;
 			if (SKIP != 0 and count % SKIP == 0){
 				++filenum;
-				std::ofstream ret(getOutName(ss.str(), ngram, filenum).c_str());
+//                                ret->close();
+//                                delete ret;
+//                                ret = new std::ofstream(getOutName(ss.str(), ngram, filenum).c_str());
+				fclose(ret);
+				ret = fopen(getOutName(ss.str(), ngram, filenum).c_str(), "w" );
 			}
 
-			std::string s(buf + it->first.first , buf + it->first.second);
-			ret << s << "\t" << it->second << std::endl;
-		}
+//                        std::string s(buf + it->first.first , buf + it->first.second);
+//                        *ret << s << "\t" << it->second << std::endl;
+			for(size_t j=it->first.first; j<it->first.second; ++j){
+				fputc(buf[j], ret);
+			};
+			fputc('\t', ret);
+			fprintf(ret,"%lu", it->second);
+			fputc('\n', ret);
+		};
+				fclose(ret);
+//                ret->close();
+//                delete ret;
 	}
 };
 
@@ -118,47 +132,54 @@ void reduce_do(char* buf, const size_t total, const std::string &out_folder){
 
 
 	{
+		size_t spaces[3];
+
 		for(size_t i = 0 ; i < total; ++i){
 			prev = i;
-			for(; buf[i] != '\t'; ++i){ //get Word
-			}
-			buf[i] = ' ';
-			size_t end_1 = i;
-			std::pair<size_t , size_t> word1(prev, i);
-			++i;
-
-			for(; buf[i] != '\t'; ++i){ //get Word
-			}
-			buf[i] = ' ';
-			size_t end_2 = i;
-			std::pair<size_t , size_t> word2(end_1+1 , i);
-			std::pair<size_t , size_t> bi1(prev, i);
-			++i;
-
-			for(; buf[i] != '\t'; ++i){ //get Word
-			}
-			size_t end_3 = i;
-			std::pair<size_t , size_t> word3(end_2+1 , i);
-			std::pair<size_t , size_t> bi2(end_1+1, i);
-			std::pair<size_t , size_t> tri1(prev, i);
-			++i;
-
+			unsigned short int count = 0;
+			bool error = false;
 			for(; buf[i] != '\n'; ++i){ //get freq
-			}
-
-			{
-				buf[i] = '\0';
-				const unsigned int freq = atoi(&buf[end_3]);
-
-				add(uni, word1, freq);
-				add(uni, word2, freq);
-				add(uni, word3, freq);
-
-				add(bi, bi1, freq);
-				add(bi, bi2, freq);
-
-				add(tri, tri1, freq);
+				if(buf[i] == '\t'){
+					if (count==3){
+						error = true;
+					}
+					else{
+						spaces[count] = i;
+						++count;
+					};
+				};
 			};
+			if (count!=3 or error)
+				continue;
+
+			buf[spaces[0]] = ' ';
+			buf[spaces[1]] = ' ';
+
+			const size_t end_1 = spaces[0];
+			const size_t end_2 = spaces[1];
+			const size_t end_3 = spaces[2];
+			const size_t tail = i;
+
+			std::pair<size_t , size_t> word1(prev, end_1);
+
+			std::pair<size_t , size_t> word2(end_1+1 , end_2);
+			std::pair<size_t , size_t> bi1(prev, end_2);
+
+			std::pair<size_t , size_t> word3(end_2+1 , end_3);
+			std::pair<size_t , size_t> bi2(end_1+1, end_3);
+			std::pair<size_t , size_t> tri1(prev, end_3);
+
+			buf[tail] = '\0';
+			const unsigned long freq = atoi(&buf[end_3]);
+
+			add(uni, word1, freq);
+			add(uni, word2, freq);
+			add(uni, word3, freq);
+
+			add(bi, bi1, freq);
+			add(bi, bi2, freq);
+
+			add(tri, tri1, freq);
 		};
 	}
 
