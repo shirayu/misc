@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+#Reconnect the server automatically 
+
+HOST=$1
+PASS=$2
+SLEEPTIME=3
+
+if which expect &> /dev/null; then
+	while :
+	do
+		expect -c "
+		spawn ssh ${HOST}
+		expect password:\ ; send \"${PASS}\r\"
+		interact
+		"
+		sleep ${SLEEPTIME}
+	done
+else
+	echo "[ERROR] expect not found. Please install expect."
+	exit -1
+fi
+
+
