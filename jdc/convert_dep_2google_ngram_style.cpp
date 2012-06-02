@@ -142,13 +142,16 @@ void reduce_do(char* buf, const size_t total, const std::string &out_folder){
 			for(; buf[i] != '\n'; ++i){ //get freq
                 if (buf[i] == '\t'){
                     if (tab_count < 2){
-                        buf[i] = '-';
+                        buf[i] = '=';
                     }
                     else{
 						spaces[count] = i;
 						++count;
                     };
                     ++tab_count;
+                }
+				else if(buf[i] == ' '){ //you can't use space
+                   buf[i] = '_';
                 }
 				else if(buf[i] == ':'){ //SPLITTER is ':'
 					if (count==3){
