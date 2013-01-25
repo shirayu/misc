@@ -65,7 +65,7 @@ void extract_dependency_relation( const std::vector<segment> &segs ) {
 	for( std::vector<segment>::const_iterator it=segs.begin(); it!=segs.end(); ++it){
                 if( it->link == -1 or it->head == -1
                         or it->morphemes[ it->head ].info[0] != "名詞"
-//                        or it->morphemes[ it->function ].info[1] != "格助詞"
+                        or it->morphemes[ it->function ].info[1] != "格助詞"
                  ) continue;
 
                 const segment * const p_dest = &segs.at( it->link );
@@ -142,7 +142,8 @@ void extract_caseframe( std::vector<segment> &segs ) {
 			};
 			segs[it->link].ns.push_back(entry + it->morphemes[ it->function ].surface);
 		}//get V
-		else if( it->morphemes[ it->head ].info[0] == "動詞" or it->morphemes[ it->head ].info[0] == "形容詞"){
+		else if( it->morphemes[ it->head ].info[0] == "動詞" 
+                or it->morphemes[ it->head ].info[0] == "形容詞"){
 			std::string dep = it->morphemes[ it->head ].getNormalForm();
 
 			if( it->morphemes[ it->head ].info[6] == "なる" and it->head > 0 ) {
