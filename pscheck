@@ -19,12 +19,11 @@ echo START at ${START_TIME}
 
 while true
 do
-        sleep ${INTERVAL};
-
-        set -A array $(ps aux | awk '{print $2}'| grep $MYPID )
+        set -A array $(ps aux | awk '{print $2}'| grep -w $MYPID )
         if [ $(echo $array |wc -w) -eq 0 ];
         then
             date && echo 'Program is dead!!' && exit
         fi
+        sleep ${INTERVAL};
 done
 
