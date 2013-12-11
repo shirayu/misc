@@ -1,0 +1,14 @@
+{
+   "content_scripts": [ {
+      "exclude_globs": [  ],
+      "exclude_matches": [  ],
+      "include_globs": [ "https://*.shinseibank.com/FLEXCUBEAt/LiveConnect.dll*" ],
+      "js": [ "script.js" ],
+      "matches": [ "http://*/*", "https://*/*" ],
+      "run_at": "document_idle"
+   } ],
+   "converted_from_user_script": true,
+   "description": "",
+   "name": "Shinsei Power Direct AutoFill",
+   "version": "0.1.2"
+}
