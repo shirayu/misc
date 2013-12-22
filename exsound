@@ -6,9 +6,9 @@ do
 	OPT=""
 
        	#sometimes return x-flv though the audio type is aac
-	MINE=`file ${arg} --mime-type`
+	MINE=`file "${arg}" --mime-type`
 
-	AUDIOTYPE=` ffmpeg -i ${arg} 2>&1 | grep Audio`
+	AUDIOTYPE=` ffmpeg -i "${arg}" 2>&1 | grep Audio`
 
 	if va=` echo ${AUDIOTYPE} |grep mp3`; [ -n "$va" ] ; then
 		FORMAT="mp3"
@@ -24,7 +24,7 @@ do
 	fi
 
 	if [ -n "${FORMAT}" ]; then
-		ffmpeg -i ${arg} ${OPT} -acodec copy "${arg%.*}.${FORMAT}"
+		ffmpeg -i "${arg}" ${OPT} -acodec copy "${arg%.*}.${FORMAT}"
 	fi
 done
 
