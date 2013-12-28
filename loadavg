@@ -1,0 +1,7 @@
+#!/bin/bash
+echo "=====PINE====="
+dsh -r ssh -m pine10,pine11,pine12,pine13,pine14,willow -c -- 'echo `hostname`  `grep "processor" /proc/cpuinfo | wc -l`  `cat /proc/loadavg`' | sed "s/ /\t/g" | sort
+echo ""
+echo "=====SUN-GRID====="
+dsh -r ssh -m sun -c -- 'qstat -g c' 
+
