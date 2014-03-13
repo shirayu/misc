@@ -8,6 +8,7 @@ __license__ = "GPL v3"
 
 """
 This script converts multiple latex files to a single tex file.
+This needs refactoring.
 """
 import sys
 
@@ -21,6 +22,7 @@ myencode = "utf8" #"euc-jp"
 
 def merge(rootdir, filename):
 
+    global myencode
     global dobib
     myfilename = os.path.join(rootdir, filename)
     for l in codecs.open(myfilename, "r", myencode).readlines():
@@ -68,7 +70,10 @@ if __name__=='__main__':
 
     if argc == 2:
         filename = argv[1]
-        dirpath = "/".join( filename.split('/')[:-1] )  + "/"
+        if filename.startswith("/") or filename.startswith("./"):
+            dirpath = "/".join( filename.split('/')[:-1] )  + "/"
+        else:
+            dirpath = ""
         merge(dirpath, filename)
     quit()
 
