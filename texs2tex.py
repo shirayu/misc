@@ -29,7 +29,7 @@ def merge(rootdir, filename):
         s =  inpsplit.split(l.lstrip().rstrip().replace(u" ",u""))
         if s[0]=="\input":
             source = s[1]
-            if not source.endswith(".tex"):
+            if not os.path.exists(source) and not source.endswith(".tex"):
                 source += ".tex"
             merge(rootdir, source )
         else:
