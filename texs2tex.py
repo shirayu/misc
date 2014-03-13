@@ -17,12 +17,13 @@ import codecs
 inpsplit = re.compile('[ {}]')
 
 dobib = False
+myencode = "utf8" #"euc-jp"
 
 def merge(rootdir, filename):
 
     global dobib
     myfilename = os.path.join(rootdir, filename)
-    for l in codecs.open(myfilename, "r", "euc-jp").readlines():
+    for l in codecs.open(myfilename, "r", myencode).readlines():
         s =  inpsplit.split(l.lstrip().rstrip().replace(u" ",u""))
         if s[0]=="\input":
             source = s[1]
@@ -50,7 +51,7 @@ def merge(rootdir, filename):
             if l.startswith(u"\\bibliograp"):
                 if dobib == False:
                     bfilename = filename.replace(u".tex", u"") + u".bbl"
-                    bdata = codecs.open(bfilename, "r", "euc-jp").read()
+                    bdata = codecs.open(bfilename, "r", myencode).read()
                     sys.stdout.write(bdata.encode("utf8"))
                     sys.stdout.write( "\n" )
                     dobib = True
