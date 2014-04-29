@@ -1,0 +1,42 @@
+#FOR http://koko15.hus.osaka-u.ac.jp/~yusuke/archive/rireki/index.html
+*** rireki.cls	Sat Mar 22 15:50:47 2008
+--- rireki_new.cls	Sat Mar 22 15:52:53 2008
+***************
+*** 98,114 ****
+  \noindent
+  \begin{picture}(\pic@width,\pic@height)
+  
+! %% タイトル，写真位置
+! \MoveTo(0,0)
+! \Put(0,0){\Large\bfseries\kanjiskip=5mm\historyname}
+! \Put(100,2){\makebox(0,5)[rc]{\scriptsize\@date 現在}}
+! \Put(105,31){\dashbox{0.5}(28,38)[c]{\scriptsize %
+!   \shortstack[c]{写真を貼る位置\\縦 36 〜 40 mm\\横 24 〜 30 mm}}}
+! \@tempcnta=\number\paperheight
+! \divide\@tempcnta by 2
+! \advance\@tempcnta by -\number\topmargin
+! \divide\@tempcnta by \unitlength
+! \Put(-16,\the\@tempcnta){$\triangleleft$}
+  
+  %% 氏名，現住所などのプロファイル
+  \MoveTo(0,0)
+--- 98,105 ----
+  \noindent
+  \begin{picture}(\pic@width,\pic@height)
+  
+! %写真挿入枠
+! \Put(105,31){{\scriptsize \shortstack[c]{\@facepic}}}
+  
+  %% 氏名，現住所などのプロファイル
+  \MoveTo(0,0)
+***************
+*** 561,564 ****
+--- 552,559 ----
+  \AtEndDocument{\addtocontents{loc}{\protect\RMoveTo(0,-\the@b)}}
+  \AtEndDocument{\@makerireki}
+  
++ %顔写真追加コマンド
++ \newcommand{\@facepic}\@empty
++ \newcommand{\facepic}[1]{\def\@facepic{\includegraphics[width=30mm]{#1}}}
++ 
+  \endinput
