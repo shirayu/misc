@@ -1,29 +1,17 @@
-#!/usr/bin/env zsh
-#
-# Exit when the designated process id disappears
-# 
-# Lisence  : Public Domain
-# Author : Yuta Hayashibe
-# 
+#!/bin/env zsh
 
-if [ $# -eq 0 ]; then
-	echo "Give a process id"
-	exit -1
-fi
+echo "Start checking"
 
-MYPID=${1}
-INTERVAL=5
-
-START_TIME=`date`;
-echo START at ${START_TIME}
-
-while true
+PID=$1
+MYHOST=`hostname -s`
+while :
 do
-        set -A array $(ps aux | awk '{print $2}'| grep -w $MYPID )
-        if [ $(echo $array |wc -w) -eq 0 ];
-        then
-            date && echo 'Program is dead!!' && exit
-        fi
-        sleep ${INTERVAL};
+    if [[ `ps -p ${PID} | wc -l` -ne 2 ]];then
+        exit 0
+    fi
+
+    echo -n "\r" `date` "    PID ${PID} still lives"
+    sleep 20
 done
+
 
