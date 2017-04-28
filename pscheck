@@ -6,12 +6,13 @@ PID=$1
 MYHOST=`hostname -s`
 while :
 do
-    if [[ `ps -p ${PID} | wc -l` -ne 2 ]];then
+    if [[ ! -e "/proc/${PID}" ]];then
+        echo "Done"
         exit 0
     fi
 
     echo -n "\r" `date` "    PID ${PID} still lives"
-    sleep 20
+    sleep 1
 done
 
 

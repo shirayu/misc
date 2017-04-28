@@ -25,7 +25,7 @@ func main() {
 		for _, word := range strings.Split(scanner.Text(), " ") {
 			countmap[word] += 1
 		}
-		if lid%100000 == 0 {
+		if lid%100 == 0 {
 			if expected_line_num == 0 {
 				fmt.Fprintf(os.Stderr, "\r%d", lid)
 			} else {
