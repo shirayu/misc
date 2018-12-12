@@ -1,4 +1,4 @@
-#!/bin/env zsh
+#!/usr/bin/env bash
 
 echo "Start checking"
 
@@ -11,8 +11,8 @@ do
         exit 0
     fi
 
-    echo -n "\r" `date` "    PID ${PID} still lives"
-    sleep 1
+    echo `date` "    PID ${PID} still lives"
+    sleep 10
 done
 
 
